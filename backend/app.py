@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from models import Client, Project
 from database import db, init_db
 import json
 from datetime import datetime
+from xhtml2pdf import pisa
+from io import BytesIO
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -126,6 +128,56 @@ def get_pricing_analysis(id):
         
     except Exception as e:
         return jsonify({'error': str(e)}), 404
+    
+@app.route('/api/generate-pdf/<int:project_id>', methods=['GET'])
+def generate_pdf(project_id):
+    try:
+        # Get project data
+        project = Project.query.get_or_404(project_id)
+        client = Client.query.get_or_404(project.client_id)
+
+        # Create HTML template
+        html = f"""
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial; margin: 20px; }}
+                h1 {{ color: #2c3e50; }}
+                .section {{ margin-bottom: 20px; }}
+                .section-title {{ font-weight: bold; margin-bottom: 10px; }}
+                .field {{ margin-bottom: 5px; }}
+                .field-label {{ font-weight: bold; display: inline-block; width: 200px; }}
+            </style>
+        </head>
+        <body>
+            <h1>Pricing Analysis Report</h1>
+            
+            <div class="section">
+                <div class="section-title">1. Client Information</div>
+                <div class="field"><span class="field-label">Client Name:</span> {client.client_name}</div>
+                <div class="field"><span class="field-label">Client Type:</span> {client.client_type}</div>
+                <!-- Add all other fields similarly -->
+            </div>
+            
+            <!-- Add all other sections similarly -->
+        </body>
+        </html>
+        """
+
+        # Generate PDF
+        pdf = BytesIO()
+        pisa.CreatePDF(BytesIO(html.encode('UTF-8')), pdf)
+        pdf.seek(0)
+
+        return send_file(
+            pdf,
+            as_attachment=True,
+            download_name=f"pricing_analysis_{project_id}.pdf",
+            mimetype='application/pdf'
+        )
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
