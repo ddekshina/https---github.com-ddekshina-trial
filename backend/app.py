@@ -143,8 +143,8 @@ def generate_pdf(project_id):
             <style>
                 body {{ font-family: Arial; margin: 20px; }}
                 h1 {{ color: #2c3e50; }}
-                .section {{ margin-bottom: 20px; }}
-                .section-title {{ font-weight: bold; margin-bottom: 10px; }}
+                .section {{ margin-bottom: 30px; }}
+                .section-title {{ font-weight: bold; margin-bottom: 10px; font-size: 18px; color: #3498db; }}
                 .field {{ margin-bottom: 5px; }}
                 .field-label {{ font-weight: bold; display: inline-block; width: 200px; }}
             </style>
@@ -156,10 +156,62 @@ def generate_pdf(project_id):
                 <div class="section-title">1. Client Information</div>
                 <div class="field"><span class="field-label">Client Name:</span> {client.client_name}</div>
                 <div class="field"><span class="field-label">Client Type:</span> {client.client_type}</div>
-                <!-- Add all other fields similarly -->
+                <div class="field"><span class="field-label">Industry Sector:</span> {client.industry_sector}</div>
+                <div class="field"><span class="field-label">Company Size:</span> {client.company_size}</div>
+                <div class="field"><span class="field-label">Annual Revenue:</span> {client.annual_revenue}</div>
+                <div class="field"><span class="field-label">Primary Contact:</span> {client.primary_contact}</div>
+                <div class="field"><span class="field-label">Email:</span> {client.email}</div>
+                <div class="field"><span class="field-label">Phone:</span> {client.phone}</div>
             </div>
             
-            <!-- Add all other sections similarly -->
+            <div class="section">
+                <div class="section-title">2. Project Overview</div>
+                <div class="field"><span class="field-label">Project Title:</span> {project.title}</div>
+                <div class="field"><span class="field-label">Description:</span> {project.description}</div>
+                <div class="field"><span class="field-label">Business Objective:</span> {project.business_objective}</div>
+                <div class="field"><span class="field-label">Expected Deliverables:</span> {', '.join(json.loads(project.expected_deliverables))}</div>
+                <div class="field"><span class="field-label">Target Audience:</span> {', '.join(json.loads(project.target_audience))}</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">3. Technical Scope</div>
+                <div class="field"><span class="field-label">Data Sources:</span> {', '.join(json.loads(project.data_sources))}</div>
+                <div class="field"><span class="field-label">Data Volume:</span> {project.data_volume}</div>
+                <div class="field"><span class="field-label">Required Integrations:</span> {', '.join(json.loads(project.required_integrations))}</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">4. Features & Functionalities</div>
+                <div class="field"><span class="field-label">Interactivity Needed:</span> {', '.join(json.loads(project.interactivity_needed))}</div>
+                <div class="field"><span class="field-label">User Access Levels:</span> {', '.join(json.loads(project.user_access_levels))}</div>
+                <div class="field"><span class="field-label">Customization Needs:</span> {', '.join(json.loads(project.customization_needs))}</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">5. Pricing Factors</div>
+                <div class="field"><span class="field-label">Engagement Type:</span> {project.engagement_type}</div>
+                <div class="field"><span class="field-label">Start Date:</span> {project.start_date.strftime('%Y-%m-%d') if project.start_date else 'N/A'}</div>
+                <div class="field"><span class="field-label">End Date:</span> {project.end_date.strftime('%Y-%m-%d') if project.end_date else 'N/A'}</div>
+                <div class="field"><span class="field-label">Delivery Model:</span> {project.delivery_model}</div>
+                <div class="field"><span class="field-label">Support Plan:</span> {project.support_plan}</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">6. Competitive/Value-based Inputs</div>
+                <div class="field"><span class="field-label">Budget Range:</span> {project.budget_range}</div>
+                <div class="field"><span class="field-label">Competitor Comparison:</span> {project.competitor_comparison}</div>
+                <div class="field"><span class="field-label">ROI Expectations:</span> {project.roi_expectations}</div>
+                <div class="field"><span class="field-label">Tiered Pricing Needed:</span> {'Yes' if project.tiered_pricing_needed else 'No'}</div>
+                <div class="field"><span class="field-label">Tiered Pricing Details:</span> {project.tiered_pricing_details if project.tiered_pricing_details else 'N/A'}</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">7. Analyst Notes & Recommendations</div>
+                <div class="field"><span class="field-label">Internal Notes:</span> {project.internal_notes}</div>
+                <div class="field"><span class="field-label">Suggested Pricing Model:</span> {project.suggested_pricing_model}</div>
+                <div class="field"><span class="field-label">Risk Factors:</span> {project.risk_factors}</div>
+                <div class="field"><span class="field-label">Next Steps:</span> {project.next_steps}</div>
+            </div>
         </body>
         </html>
         """
